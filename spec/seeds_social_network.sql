@@ -11,8 +11,8 @@ CREATE TABLE posts (
   content text,
   view_count int,
 -- The foreign key name is always {other_table_singular}_id
-  network_user_id int,
-  constraint fk_network_user1 foreign key(network_user_id)
+  account_id int,
+  constraint fk_account1 foreign key(account_id)
     references accounts(id)
     on delete cascade
 );
@@ -23,7 +23,7 @@ INSERT INTO accounts (email, username) VALUES
 ('superdog@hotmail.com', 'sdawg'),
 ('wonderkite@hotmail.com', 'kitto');
 
-INSERT INTO posts (title, content, view_count, network_user_id) VALUES 
+INSERT INTO posts (title, content, view_count, account_id) VALUES 
 ('How to be cool', 'Just be', '3', '1'),
 ('How to be chill', 'Just be', '14', '1'),
 ('Eat carrots', 'Eat carrots as part of a health diet', '220', '2'),

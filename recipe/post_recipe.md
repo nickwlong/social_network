@@ -77,7 +77,7 @@ Define the attributes of your Model class. You can usually map the table columns
 # (in lib/post.rb)
 
 class Post
-  attr_accessor :id, :title, :content, :view_count
+  attr_accessor :id, :title, :content, :view_count, :account_id
 end
 
 ```
@@ -103,7 +103,7 @@ class postRepository
   # No arguments
   def all
     # Executes the SQL query:
-    # SELECT id, email_address, username FROM posts;
+    # SELECT id, title, content, view_count, account_id FROM posts;
 
     # Returns an array of post objects.
   end
@@ -112,7 +112,7 @@ class postRepository
   # One argument: the id (number)
   def find(id)
     # Executes the SQL query:
-    # SELECT id, email_address, username FROM posts; WHERE id = $1;
+    # SELECT id, title, content, view_count, account_id FROM posts WHERE id = $1;
 
     # Returns a single post object.
   end
@@ -122,17 +122,17 @@ class postRepository
 
     #Inserts attributes of an post object into the database
     #Executes the SQL query:
-    #INSERT INTO posts (email_address, username) VALUES ($1, $2);
+    #INSERT INTO posts (id, title, content, view_count, account_id) VALUES ($1, $2, $3, $4);
     #Returns nothing
   end
 
   def update(post)
     #Updates details of an post of a certain id
     #Executes the SQL query:
-    #UPDATE posts SET email_address = $1, username = $2 WHERE id = $3;
+    #UPDATE posts SET title = $1, content = $2, view_count = $3, account_id = $4 WHERE id = $5;
   end
 
-  def delete(post)
+  def delete(id)
     #Deletes an post based on the post id
     #Executes the SQL query:
     #DELETE FROM posts WHERE id = $1;
@@ -152,70 +152,95 @@ These examples will later be encoded as RSpec tests.
 # 1
 # Get all posts
 
-repo = postRepository.new
+repo = PostRepository.new
 
 posts = repo.all
 
 posts.length # =>  2
 
 posts[0].id # => "1"
-posts[0].email_address # => 'nick@hotmail.com'
-posts[0].username # => 'nick'
+posts[0].title # => 'How to be cool'
+posts[0].content # => 'Just be'
+posts[0].view_count # => '3'
+posts[0].account_id # => '1'
 
 posts[1].id # => '2'
-posts[1].email_address # => 'jim@hotmail.com'
-posts[1].username # => 'jimmo'
+posts[1].email_address # => 'How to be chill'
+posts[1].username # => 'Just being'
+posts[1].view_count # => '14'
+posts[1].account_id # => '2'
+
 
 
 # 2
 # Get a single post
 
-repo = postRepository.new
+repo = PostRepository.new
 
 post = repo.find(1)
 
 posts.id # => "1"
-posts.email_address # => 'nick@hotmail.com'
-posts.username # => 'nick'
+posts.title # => 'How to be cool'
+posts.content # => 'Just be'
+posts.view_count # => '3'
+posts.account_id # => '1'
 
 #3 
 #Create a new post
 
-repo = postRepository.new
+repo = PostRepository.new
 
-post = post.new
-post.email_address = 'fake@fake.com'
-post.username = 'sonotfake'
+post = Post.new
+post.title = 'Fake News'
+post.content = 'Is fake'
+post.view_count = '34'
+post.account_id = '2'
 
 repo.create(post)
 
 posts = repo.all
-posts.last.email_address # => 'fake@fake.com'
-posts.last.username # => 'sonotfake'
+post.last.title # => 'Fake News'
+post.last.content # => 'Is fake'
+post.last.view_count # => '34'
+post.last.account_id # => '2'
+
 
 #4
 #Update an post
 
-repo = postRepository.new
+repo = PostRepository.new
 
-post = post.new
-post.email = 'fake@fake.com'
-post.username = 'sonotfake'
-post.id = '1'
+post = Post.new
+post.title = 'Oopsy'
+post.content = 'Big oopsy update'
+post.view_count = '1400'
+post.account_id = '2'
 
 repo.update(post)
 changed_post = repo.find(1)
-changed_post.email # => 'fake@fake.com'
-changed_post.username # => 'sonotfake'
+changed_post.title # => 'Oopsy'
+changed_post.content # => 'Big oopsy update'
+changed_post.view_count # => '1400'
+changed_post.account_id # => '2'
 
 #5
-#Delete an post
-repo = postRepository.new
+#Delete a post
+repo = PostRepository.new
 
 repo.delete(1)
 all_posts = repo.all
 all_posts.length # => 1
 all_posts.first.id # => 2
+
+#Delete both posts
+
+repo = PostRepository.new
+
+repo.delete(1)
+repo.delete(2)
+all_posts = repo.all
+all_posts.length # => 0
+
 
 # Add more examples for each method
 ```
