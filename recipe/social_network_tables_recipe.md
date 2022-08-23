@@ -32,7 +32,7 @@ I'd like each of my posts to have a number of views.
 ```
 Nouns:
 
-album, title, release year, artist, name
+accounts, account email address, account username, posts, post title, post content, post view count
 ```
 
 ## 2. Infer the Table Name and Columns
@@ -41,16 +41,16 @@ Put the different nouns in this table. Replace the example with your own nouns.
 
 | Record                | Properties          |
 | --------------------- | ------------------  |
-| album                 | title, release year
-| artist                | name
+| accounts              | email address, username
+| posts                | title, content, view count
 
-1. Name of the first table (always plural): `albums` 
+1. Name of the first table (always plural): `accounts` 
 
-    Column names: `title`, `release_year`
+    Column names: `email`, `username`
 
-2. Name of the second table (always plural): `artists` 
+2. Name of the second table (always plural): `posts` 
 
-    Column names: `name`
+    Column names: `title`, `content`, `view_count`
 
 ## 3. Decide the column types.
 
@@ -63,14 +63,16 @@ Remember to **always** have the primary key `id` as a first column. Its type wil
 ```
 # EXAMPLE:
 
-Table: albums
+Table: accounts
 id: SERIAL
-title: text
-release_year: int
+email: text
+username: text
 
 Table: artists
 id: SERIAL
-name: text
+title: text
+content: text
+view_count: int
 ```
 
 ## 4. Decide on The Tables Relationship
@@ -93,14 +95,14 @@ Replace the relevant bits in this example with your own:
 ```
 # EXAMPLE
 
-1. Can one artist have many albums? YES
-2. Can one album have many artists? NO
+1. Can one account have many posts? YES
+2. Can one post have many accounts? NO
 
 -> Therefore,
--> An artist HAS MANY albums
--> An album BELONGS TO an artist
+-> An account HAS MANY posts
+-> An post BELONGS TO an account
 
--> Therefore, the foreign key is on the albums table.
+-> Therefore, the foreign key is on the posts table.
 ```
 
 *If you can answer YES to the two questions, you'll probably have to implement a Many-to-Many relationship, which is more complex and needs a third table (called a join table).*
@@ -114,20 +116,21 @@ Replace the relevant bits in this example with your own:
 -- Replace the table name, columm names and types.
 
 -- Create the table without the foreign key first.
-CREATE TABLE artists (
+CREATE TABLE accounts (
   id SERIAL PRIMARY KEY,
-  name text,
+  email text,
+  username text
 );
 
 -- Then the table with the foreign key first.
-CREATE TABLE albums (
+CREATE TABLE posts (
   id SERIAL PRIMARY KEY,
   title text,
-  release_year int,
+  content text,
 -- The foreign key name is always {other_table_singular}_id
-  artist_id int,
-  constraint fk_artist foreign key(artist_id)
-    references artists(id)
+  view_count int,
+  constraint fk_account foreign key(account_id)
+    references accounts(id)
     on delete cascade
 );
 
@@ -136,5 +139,5 @@ CREATE TABLE albums (
 ## 5. Create the tables.
 
 ```bash
-psql -h 127.0.0.1 database_name < albums_table.sql
+psql -h 127.0.0.1 social_network < spec/seeds_social_network.sql
 ```

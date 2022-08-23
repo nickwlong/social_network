@@ -1,4 +1,4 @@
-CREATE TABLE network_users (
+CREATE TABLE accounts (
   id SERIAL PRIMARY KEY,
   email text,
   username text
@@ -13,11 +13,11 @@ CREATE TABLE posts (
 -- The foreign key name is always {other_table_singular}_id
   network_user_id int,
   constraint fk_network_user1 foreign key(network_user_id)
-    references network_users(id)
+    references accounts(id)
     on delete cascade
 );
 
-INSERT INTO network_users (email, username) VALUES
+INSERT INTO accounts (email, username) VALUES
 ('nick@hotmail.com', 'nick'),
 ('jim@hotmail.com', 'jimmo'),
 ('superdog@hotmail.com', 'sdawg'),

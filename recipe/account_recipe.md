@@ -1,4 +1,4 @@
-# post Model and Repository Classes Design Recipe
+# Account Model and Repository Classes Design Recipe
 
 _Copy this recipe template to design and implement Model and Repository classes for a database table._
 
@@ -8,12 +8,12 @@ If the table is already created in the database, you can skip this step.
 
 Otherwise, [follow this recipe to design and create the SQL schema for your table](./single_table_design_recipe_template.md).
 
-*In this template, we'll use an example table `posts`*
+*In this template, we'll use an example table `accounts`*
 
 ```
 # EXAMPLE
 
-Table: posts
+Table: accounts
 
 Columns:
 id | name | cohort_name
@@ -52,16 +52,16 @@ Usually, the Model class name will be the capitalised table name (single instead
 
 ```ruby
 # EXAMPLE
-# Table name: posts
+# Table name: accounts
 
 # Model class
-# (in lib/post.rb)
-class Post
+# (in lib/account.rb)
+class Account
 end
 
 # Repository class
-# (in lib/post_repository.rb)
-class PostRepository
+# (in lib/account_repository.rb)
+class AccountRepository
 end
 ```
 
@@ -71,13 +71,13 @@ Define the attributes of your Model class. You can usually map the table columns
 
 ```ruby
 # EXAMPLE
-# Table name: posts
+# Table name: accounts
 
 # Model class
-# (in lib/post.rb)
+# (in lib/account.rb)
 
-class Post
-  attr_accessor :id, :title, :content, :view_count
+class Account
+  attr_accessor :id, :email_address, :username
 end
 
 ```
@@ -92,50 +92,50 @@ Using comments, define the method signatures (arguments and return value) and wh
 
 ```ruby
 # EXAMPLE
-# Table name: posts
+# Table name: accounts
 
 # Repository class
-# (in lib/post_repository.rb)
+# (in lib/account_repository.rb)
 
-class postRepository
+class AccountRepository
 
   # Selecting all records
   # No arguments
   def all
     # Executes the SQL query:
-    # SELECT id, email_address, username FROM posts;
+    # SELECT id, email_address, username FROM accounts;
 
-    # Returns an array of post objects.
+    # Returns an array of Account objects.
   end
 
   # Gets a single record by its ID
   # One argument: the id (number)
   def find(id)
     # Executes the SQL query:
-    # SELECT id, email_address, username FROM posts; WHERE id = $1;
+    # SELECT id, email_address, username FROM accounts; WHERE id = $1;
 
-    # Returns a single post object.
+    # Returns a single Account object.
   end
 
 
-  def create(post)
+  def create(account)
 
-    #Inserts attributes of an post object into the database
+    #Inserts attributes of an account object into the database
     #Executes the SQL query:
-    #INSERT INTO posts (email_address, username) VALUES ($1, $2);
+    #INSERT INTO accounts (email_address, username) VALUES ($1, $2);
     #Returns nothing
   end
 
-  def update(post)
-    #Updates details of an post of a certain id
+  def update(account)
+    #Updates details of an account of a certain id
     #Executes the SQL query:
-    #UPDATE posts SET email_address = $1, username = $2 WHERE id = $3;
+    #UPDATE accounts SET email_address = $1, username = $2 WHERE id = $3;
   end
 
-  def delete(post)
-    #Deletes an post based on the post id
+  def delete(account)
+    #Deletes an account based on the account id
     #Executes the SQL query:
-    #DELETE FROM posts WHERE id = $1;
+    #DELETE FROM accounts WHERE id = $1;
   end
 end
 ```
@@ -150,72 +150,72 @@ These examples will later be encoded as RSpec tests.
 # EXAMPLES
 
 # 1
-# Get all posts
+# Get all accounts
 
-repo = postRepository.new
+repo = AccountRepository.new
 
-posts = repo.all
+accounts = repo.all
 
-posts.length # =>  2
+accounts.length # =>  2
 
-posts[0].id # => "1"
-posts[0].email_address # => 'nick@hotmail.com'
-posts[0].username # => 'nick'
+accounts[0].id # => "1"
+accounts[0].email_address # => 'nick@hotmail.com'
+accounts[0].username # => 'nick'
 
-posts[1].id # => '2'
-posts[1].email_address # => 'jim@hotmail.com'
-posts[1].username # => 'jimmo'
+accounts[1].id # => '2'
+accounts[1].email_address # => 'jim@hotmail.com'
+accounts[1].username # => 'jimmo'
 
 
 # 2
-# Get a single post
+# Get a single account
 
-repo = postRepository.new
+repo = AccountRepository.new
 
-post = repo.find(1)
+account = repo.find(1)
 
-posts.id # => "1"
-posts.email_address # => 'nick@hotmail.com'
-posts.username # => 'nick'
+accounts.id # => "1"
+accounts.email_address # => 'nick@hotmail.com'
+accounts.username # => 'nick'
 
 #3 
-#Create a new post
+#Create a new account
 
-repo = postRepository.new
+repo = AccountRepository.new
 
-post = post.new
-post.email_address = 'fake@fake.com'
-post.username = 'sonotfake'
+account = Account.new
+account.email_address = 'fake@fake.com'
+account.username = 'sonotfake'
 
-repo.create(post)
+repo.create(account)
 
-posts = repo.all
-posts.last.email_address # => 'fake@fake.com'
-posts.last.username # => 'sonotfake'
+accounts = repo.all
+accounts.last.email_address # => 'fake@fake.com'
+accounts.last.username # => 'sonotfake'
 
 #4
-#Update an post
+#Update an account
 
-repo = postRepository.new
+repo = AccountRepository.new
 
-post = post.new
-post.email = 'fake@fake.com'
-post.username = 'sonotfake'
-post.id = '1'
+account = Account.new
+account.email = 'fake@fake.com'
+account.username = 'sonotfake'
+account.id = '1'
 
-repo.update(post)
-changed_post = repo.find(1)
-changed_post.email # => 'fake@fake.com'
-changed_post.username # => 'sonotfake'
+repo.update(account)
+changed_account = repo.find(1)
+changed_account.email # => 'fake@fake.com'
+changed_account.username # => 'sonotfake'
 
 #5
-#Delete an post
-repo = postRepository.new
+#Delete an account
+repo = AccountRepository.new
 
 repo.delete(1)
-all_posts = repo.all
-all_posts.length # => 1
-all_posts.first.id # => 2
+all_accounts = repo.all
+all_accounts.length # => 1
+all_accounts.first.id # => 2
 
 # Add more examples for each method
 ```
@@ -231,17 +231,17 @@ This is so you get a fresh table contents every time you run the test suite.
 ```ruby
 # EXAMPLE
 
-# file: spec/post_repository_spec.rb
+# file: spec/account_repository_spec.rb
 
-def reset_posts_table
-  seed_sql = File.read('spec/seeds_posts.sql')
-  connection = PG.connect({ host: '127.0.0.1', dbname: 'posts' })
+def reset_accounts_table
+  seed_sql = File.read('spec/seeds_accounts.sql')
+  connection = PG.connect({ host: '127.0.0.1', dbname: 'accounts' })
   connection.exec(seed_sql)
 end
 
-describe postRepository do
+describe accountRepository do
   before(:each) do 
-    reset_posts_table
+    reset_accounts_table
   end
 
   # (your tests will go here).
